@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="GameLauncherManager.View.Dialogs.EditLauncherDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:GameLauncherManager.View.Dialogs"
+             mc:Ignorable="d"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
+             xmlns:converters="clr-namespace:GameLauncherManager.Utils.Converters"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:InputContentToIsNull x:Key="InputContentToIsNull"></converters:InputContentToIsNull>
+    </UserControl.Resources>
+    <StackPanel Width="300" Margin="16">
+        <TextBlock Text="编辑启动器"
+                   HorizontalAlignment="Left"
+                   FontWeight="Bold" />
+        <TextBox x:Name="LauncherName"
+                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                 materialDesign:HintAssist.Hint="启动器名称"
+                 Margin="0 8 0 0"
+                 HorizontalAlignment="Stretch"
+                 Text="{Binding Name, Mode=OneWay}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="25"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="LauncherPath"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                     materialDesign:HintAssist.Hint="启动器路径"
+                     Margin="0 8 0 0"
+                     Text="{Binding GamePlugins[0].Path, Mode=OneWay}">
+            </TextBox>
+            <Button Grid.Column="1"
+                    Style="{StaticResource MaterialDesignToolButton}"
+                    Margin="0"
+                    Padding="0"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding Source={StaticResource Locator}, Path=MainWindowViewModel.EditGameLauncherPathCommand}"
+                    CommandParameter="{Binding ElementName=LauncherPath}">
+                <materialDesign:PackIcon
+                    Kind="FolderOutline"
+                    Width="25"
+                    Height="25">
+                </materialDesign:PackIcon>
+            </Button>
+
+        </Grid>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                    IsCancel="True"
+                    Margin="0 8 8 0"
+                    Content="取消"
+                    HorizontalAlignment="Left"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            <Button Grid.Column="1"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    IsDefault="True"
+                    Margin="0 8 8 0"
+                    Content="保存"
+                    HorizontalAlignment="Right"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource BooleanAllConverter}">
+                        <Binding ElementName="LauncherName" Path="Text"
+                                 Converter="{StaticResource InputContentToIsNull}" />
+                        <Binding ElementName="LauncherPath" Path="Text"
+                                 Converter="{StaticResource InputContentToIsNull}" />
+                    </MultiBinding>
+                </Button.IsEnabled>
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </Grid>
+    </StackPanel>
+</UserControl>
